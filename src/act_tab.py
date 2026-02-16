@@ -29,7 +29,6 @@ class ActsTab:
             self.tab, text="Генератор актов", font=("Arial", 24, "bold")
         )
         title_label_act.pack(pady=10, padx=20, fill="x")
-        # TODO тут пишем описание окна
 
         file_frame = ctk.CTkFrame(self.tab)
         file_frame.pack(pady=10, padx=20, fill="x")
