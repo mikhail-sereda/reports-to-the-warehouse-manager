@@ -50,7 +50,6 @@ class ReportTab:
 
         # Фрейм для кнопок действий (строка 2)
         action_frame = ctk.CTkFrame(self.tab)
-        # action_frame.grid(row=2, column=0, columnspan=4, padx=20, pady=10, sticky="nsew")
         action_frame.pack(pady=10, padx=20, fill="x")
 
         # Кнопка проверки
@@ -120,10 +119,6 @@ class ReportTab:
 
         except:
             messagebox.showerror("Ошибка", "Ошибка чтения файла")
-
-    def save_edited_excel(self):
-        """Сохранение отредактированного Excel файла"""
-        messagebox.showinfo("Инфо", "Файл сохранен!")
 
     def generate_report(self, report_text):
         """Генерация текста отчета"""
