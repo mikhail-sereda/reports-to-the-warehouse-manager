@@ -37,11 +37,11 @@ def iter_excel_openpyxl(file_path: Path, osg: int):
 
     for row in rows:
         name = str(row[0].value)
-        if any(isinstance(cell.value, (int)) and cell.value != 0 for cell in row):
-            expirationvalue = get_OSG(name)
-            if not expirationvalue:
+        if any(isinstance(cell.value, int) and cell.value != 0 for cell in row):
+            expiration_value = get_OSG(name)
+            if not expiration_value:
                 row[0].fill = yellow_fill
-                report_text += f"{name.replace(', кг', '')}:{expirationvalue} - н.д.\n"
+                report_text += f"{name.replace(', кг', '')}:{expiration_value} - н.д.\n"
                 continue
             for cell in row:
                 header_cell = sheet.cell(
@@ -53,15 +53,15 @@ def iter_excel_openpyxl(file_path: Path, osg: int):
                     if isinstance(cell.value, (int, float)):
                         days_diff = (datetime.now() - date_header).days
 
-                        if int(expirationvalue) - days_diff <= int(
-                            int(expirationvalue) * ((osg - 20) / 100)
+                        if int(expiration_value) - days_diff <= int(
+                            int(expiration_value) * ((osg - 20) / 100)
                         ):
                             cell.fill = red_fill
                             report_text += f"{name.replace(', кг', '')} - "
                             report_text += f"от {date_header.strftime('%d.%m.%y')} - {cell.value} шт., \n"
 
-                        elif int(expirationvalue) - days_diff <= int(
-                            int(expirationvalue) * (osg / 100)
+                        elif int(expiration_value) - days_diff <= int(
+                            int(expiration_value) * (osg / 100)
                         ):
                             cell.fill = yellow_fill
                             report_text += f"{name.replace(', кг', '')}: - "
@@ -70,6 +70,3 @@ def iter_excel_openpyxl(file_path: Path, osg: int):
     output_path = Path(f"{file_path.parent}/Отчет {file_path.stem}.xlsx")
     workbook.save(output_path)
     return output_path, report_text
-
-
-# iter_excel_openpyxl(Path("../static/test/Остатки Творог 25_12.xlsx"))
