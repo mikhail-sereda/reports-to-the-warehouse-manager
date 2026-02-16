@@ -4,7 +4,7 @@ from tkinter import filedialog, messagebox
 import customtkinter as ctk
 
 from src.create_excel_act import pars_invoice, create_act
-from src.utils import remake_file
+from src.utils.utils import remake_file
 
 
 class ActsTab:
