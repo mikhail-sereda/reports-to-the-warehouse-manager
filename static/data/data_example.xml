@@ -1,0 +1,47 @@
+<root version_sync="0.5" encoding="UTF-8" owner_system="SM">
+	<gwares>
+
+		<wares id="45a8fd1e-dd26-0000-80bf-c4352bc56456" code="ПР000008249" name="Name prod1" articul="" delete="0" parentcode="000000000" parentid="907dcbaa-b2bc-11dc-b4af-000cf1c68719" parent="parent" parentgroup="1" group="0" tax="НДС10" expirationvalue="14" expirationtype="D">
+			<waresunits>
+				<waresunit unit="кор" factor="46"/>
+				<waresunit unit="гфр" factor="8">
+					<barcodes>
+						<barcode delete="0" value="14620141960327" main="1"/>
+					</barcodes>
+				</waresunit>
+				<waresunit unit="796">
+					<barcodes>
+						<barcode delete="0" value="4620141960320" main="1"/>
+					</barcodes>
+				</waresunit>
+			</waresunits>
+			<countries>
+				<country oksm="643"/>
+			</countries>
+			<producers>
+				<producer id="57e2039d-9f54-11f0-b524-00505690c554"/>
+			</producers>
+		</wares>
+		<wares id="7d9a856d-dd27-85ea-80bf-c2566bc56456" code="ПР000008250" name="Name prod1" articul="" delete="0" parentcode="0000000004" parentid="907dcbaa-b2bc-11dc-b4af-000cf1c68719" parent="parent" parentgroup="1" group="0" tax="НДС10" expirationvalue="10" expirationtype="D">
+			<waresunits>
+				<waresunit unit="т/у" factor="6">
+					<barcodes>
+						<barcode delete="0" value="4620141963550" main="1"/>
+					</barcodes>
+				</waresunit>
+				<waresunit unit="796">
+					<barcodes>
+						<barcode delete="0" value="4620141961297" main="1"/>
+					</barcodes>
+				</waresunit>
+			</waresunits>
+			<countries>
+				<country oksm="643"/>
+			</countries>
+			<producers>
+				<producer id="57e2039d-9f54-11f0-b524-00505690c554"/>
+			</producers>
+		</wares>
+
+    </gwares>
+</root>
