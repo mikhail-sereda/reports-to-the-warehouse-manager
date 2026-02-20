@@ -1,7 +1,6 @@
 import datetime
 import os
 
-from email.policy import default
 from pathlib import Path
 
 import openpyxl

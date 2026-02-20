@@ -1,8 +1,14 @@
+"""
+Модуль для работы с файлами и архивами.
+
+Этот модуль предоставляет функции для копирования файлов,
+создания архивов и работы с путями файловых систем.
+"""
+
 import shutil
 import os
 from zipfile import ZipFile
 from pathlib import Path
-import logging
 
 
 def remake_file(file_path: Path):

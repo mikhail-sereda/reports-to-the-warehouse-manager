@@ -26,6 +26,6 @@ class MainApp(ctk.CTk):  # ← Наследуем от ctk.CTk
         self.notebook = ctk.CTkTabview(master=self, anchor="w", width=470, height=620)
         self.notebook.pack(fill="both", expand=True, pady=10, padx=10)
 
-        # добавляем вклвдки
+        # добавляем вкладки
         self.report_tab = ReportTab(self.notebook, self)
         self.acts_tab = ActsTab(self.notebook)

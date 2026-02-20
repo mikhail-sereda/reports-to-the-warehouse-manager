@@ -9,8 +9,15 @@ import xml.etree.ElementTree as ET
 tree = ET.parse(Path("static/data/data.xml"))
 root = tree.getroot()
 
+YELLOW_FILL = PatternFill(
+    start_color="FFFF00", end_color="FFFF00", fill_type="solid"  # Желтый
+)
+RED_FILL = PatternFill(
+    start_color="FF0000", end_color="FF0000", fill_type="solid"  # Желтый
+)
 
-def get_OSG(name_product: str):
+
+def get_osg(name_product: str):
     for book in root.findall(".//wares"):
         name_pars = book.get("name")
         date = book.get("expirationvalue")
@@ -19,14 +26,6 @@ def get_OSG(name_product: str):
             or name_pars.lower() in name_product.lower()
         ):
             return date
-
-
-yellow_fill = PatternFill(
-    start_color="FFFF00", end_color="FFFF00", fill_type="solid"  # Желтый
-)
-red_fill = PatternFill(
-    start_color="FF0000", end_color="FF0000", fill_type="solid"  # Желтый
-)
 
 
 def iter_excel_openpyxl(file_path: Path, osg: int):
@@ -38,9 +37,9 @@ def iter_excel_openpyxl(file_path: Path, osg: int):
     for row in rows:
         name = str(row[0].value)
         if any(isinstance(cell.value, int) and cell.value != 0 for cell in row):
-            expiration_value = get_OSG(name)
+            expiration_value = get_osg(name)
             if not expiration_value:
-                row[0].fill = yellow_fill
+                row[0].fill = YELLOW_FILL
                 report_text += f"{name.replace(', кг', '')}:{expiration_value} - н.д.\n"
                 continue
             for cell in row:
@@ -56,14 +55,14 @@ def iter_excel_openpyxl(file_path: Path, osg: int):
                         if int(expiration_value) - days_diff <= int(
                             int(expiration_value) * ((osg - 20) / 100)
                         ):
-                            cell.fill = red_fill
+                            cell.fill = RED_FILL
                             report_text += f"{name.replace(', кг', '')} - "
                             report_text += f"от {date_header.strftime('%d.%m.%y')} - {cell.value} шт., \n"
 
                         elif int(expiration_value) - days_diff <= int(
                             int(expiration_value) * (osg / 100)
                         ):
-                            cell.fill = yellow_fill
+                            cell.fill = YELLOW_FILL
                             report_text += f"{name.replace(', кг', '')}: - "
                             report_text += f"от {date_header.strftime('%d.%m.%y')} - {cell.value} шт., \n"
 

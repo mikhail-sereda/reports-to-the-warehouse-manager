@@ -3,6 +3,8 @@ from tkinter import filedialog, messagebox
 
 import customtkinter as ctk
 
+
+from settings.settings import load_data, settings, append_data
 from src.create_excel_act import pars_invoice, create_act
 from src.utils.utils import remake_file
 
@@ -14,12 +16,19 @@ class ActsTab:
         self.tab = master.add(f"{'Акты':^30}")
 
         self.position1 = "Руководитель СК"
-        self.name1 = "Жигульская Д.Я."
-
+        try:
+            self.name1 = load_data(str(settings.NAMES1_FILE))[-1]
+        except IndexError:
+            self.name1 = ""
         self.position2 = "Кладовщик"
-        self.name2 = ""
-
-        self.reason_for_write_off = "срок"
+        try:
+            self.name2 = load_data(str(settings.NAMES2_FILE))[-1]
+        except IndexError:
+            self.name2 = ""
+        try:
+            self.reason_for_write_off = load_data(str(settings.REASON_FILE))[-1]
+        except IndexError:
+            self.reason_for_write_off = ""
         self.create_widgets_act()
 
     def create_widgets_act(self):
@@ -53,10 +62,10 @@ class ActsTab:
 
         # Фрейм для полей настроек
         setting_frame = ctk.CTkFrame(self.tab)
-        # action_frame.grid(row=2, column=0, columnspan=4, padx=20, pady=10, sticky="nsew")
         setting_frame.pack(pady=10, padx=20, fill="x")
 
         # Настройка растягивания при изменении размера окна
+
         setting_frame.grid_rowconfigure(0, weight=1)
         setting_frame.grid_rowconfigure(1, weight=1)
         setting_frame.grid_rowconfigure(2, weight=1)
@@ -83,6 +92,7 @@ class ActsTab:
         self.name1_label.grid(row=0, column=1, padx=5, pady=(0, 0), sticky="ew")
         self.name1_entry = ctk.CTkEntry(setting_frame)
         self.name1_entry.insert(0, self.name1)
+        self.name1_entry.getvar()
         self.name1_entry.grid(row=1, column=1, padx=5, pady=(0, 15), sticky="ew")
 
         self.position2_label = ctk.CTkLabel(
@@ -160,6 +170,9 @@ class ActsTab:
         self.position2 = self.position2_entry.get()
         self.name2 = self.name2_entry.get()
         self.reason_for_write_off = self.reason_for_write_off_entry.get()
+        append_data(self.name1, str(settings.NAMES1_FILE))
+        append_data(self.name2, str(settings.NAMES2_FILE))
+        append_data(self.reason_for_write_off, str(settings.REASON_FILE))
         if not all(
             (
                 self.position1,
