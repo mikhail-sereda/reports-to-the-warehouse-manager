@@ -36,9 +36,6 @@ class Settings:
             self._create_data_files(str(self.REASON_FILE))
 
 
-
-
-
 def save_data(data, filename):
     with open(filename, "wb") as f:
         pickle.dump(data, f)
@@ -58,8 +55,5 @@ def append_data(data, filename):
     save_data(old_data, filename)
     return old_data
 
+
 settings = Settings()
-print(settings.NAMES1_FILE)
-print(load_data(settings.NAMES1_FILE))
-print(load_data(settings.NAMES2_FILE))
-print(load_data(settings.REASON_FILE))
