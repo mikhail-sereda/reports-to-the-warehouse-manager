@@ -1,10 +1,10 @@
 from pathlib import Path
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, StringVar
 
 import customtkinter as ctk
 
 
-from settings.settings import load_data, settings, append_data
+from src.settings.settings import load_data, settings, append_data
 from src.create_excel_act import pars_invoice, create_act
 from src.utils.utils import remake_file
 
@@ -17,14 +17,21 @@ class ActsTab:
 
         self.position1 = "Руководитель СК"
         try:
-            self.name1 = load_data(str(settings.NAMES1_FILE))[-1]
+            self.name1 = load_data(str(settings.NAMES1_FILE))[-1::-1]
+            self.name1str = self.name1[-1]
         except IndexError:
-            self.name1 = ""
+            self.name1str = ""
+            self.name1 = [self.name1str]
+        self.name1var = StringVar(value=self.name1[-1])
         self.position2 = "Кладовщик"
         try:
-            self.name2 = load_data(str(settings.NAMES2_FILE))[-1]
+            self.name2 = load_data(str(settings.NAMES2_FILE))[-1::-1]
+            self.name2str = self.name2[-1]
         except IndexError:
-            self.name2 = ""
+            self.name2str = ""
+            self.name2 = [self.name2str]
+        self.name2var = StringVar(value=self.name2[-1])
+
         try:
             self.reason_for_write_off = load_data(str(settings.REASON_FILE))[-1]
         except IndexError:
@@ -90,10 +97,10 @@ class ActsTab:
             setting_frame, text="Ф.И.О.", font=("Arial", 12)
         )
         self.name1_label.grid(row=0, column=1, padx=5, pady=(0, 0), sticky="ew")
-        self.name1_entry = ctk.CTkEntry(setting_frame)
-        self.name1_entry.insert(0, self.name1)
-        self.name1_entry.getvar()
-        self.name1_entry.grid(row=1, column=1, padx=5, pady=(0, 15), sticky="ew")
+        self.name1_combo_box = ctk.CTkComboBox(setting_frame, values=self.name1)
+        # self.name1_combo_box.insert(0, self.name1)
+
+        self.name1_combo_box.grid(row=1, column=1, padx=5, pady=(0, 15), sticky="ew")
 
         self.position2_label = ctk.CTkLabel(
             setting_frame, text="Должность", font=("Arial", 12)
@@ -109,9 +116,10 @@ class ActsTab:
         )
         self.name2_label.grid(row=2, column=1, padx=5, pady=(0, 0), sticky="ew")
 
-        self.name2_entry = ctk.CTkEntry(setting_frame)
-        self.name2_entry.insert(0, self.name2)
-        self.name2_entry.grid(row=3, column=1, padx=5, pady=(0, 15), sticky="ew")
+        self.name2_combo_box = ctk.CTkComboBox(setting_frame, values=self.name2)
+
+        # self.name2_entry.insert(0, self.name2)
+        self.name2_combo_box.grid(row=3, column=1, padx=5, pady=(0, 15), sticky="ew")
 
         self.reason_for_write_off_label = ctk.CTkLabel(
             setting_frame, text="Причина списания", font=("Arial", 12)
@@ -166,19 +174,27 @@ class ActsTab:
 
     def _create_setting_data(self):
         self.position1 = self.position1_entry.get()
-        self.name1 = self.name1_entry.get()
+        self.name1str = self.name1_combo_box.get()
         self.position2 = self.position2_entry.get()
-        self.name2 = self.name2_entry.get()
+        self.name2str = self.name2_combo_box.get()
         self.reason_for_write_off = self.reason_for_write_off_entry.get()
-        append_data(self.name1, str(settings.NAMES1_FILE))
-        append_data(self.name2, str(settings.NAMES2_FILE))
+        append_data(self.name1str, str(settings.NAMES1_FILE))
+        append_data(self.name2str, str(settings.NAMES2_FILE))
         append_data(self.reason_for_write_off, str(settings.REASON_FILE))
+        self.name1 = load_data(str(settings.NAMES1_FILE))
+        self.name2 = load_data(str(settings.NAMES2_FILE))
+
+        self.name1_combo_box.configure(values=self.name1[-1::-1])
+        self.name2_combo_box.configure(
+            values=self.name2[-1::-1]
+        )  # отображает недавно введенные вверху
+        # self.name2_entry.update()
         if not all(
             (
                 self.position1,
-                self.name1,
+                self.name1str,
                 self.position2,
-                self.name2,
+                self.name2str,
                 self.reason_for_write_off,
             )
         ):
@@ -199,9 +215,9 @@ class ActsTab:
             for invoice in self.invoices_data:
                 create_act(
                     invoice,
-                    name1=self.name1,
+                    name1=self.name1str,
                     position1=self.position1,
-                    name2=self.name2,
+                    name2=self.name2str,
                     position2=self.position2,
                     reason=self.reason_for_write_off,
                 )
