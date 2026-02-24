@@ -4,7 +4,7 @@ from tkinter import filedialog, messagebox, StringVar
 import customtkinter as ctk
 
 
-from src.settings.settings import load_data, settings, append_data
+from src.settings.settings import load_data, settings, append_data, save_data
 from src.create_excel_act import pars_invoice, create_act
 from src.utils.utils import remake_file
 
@@ -14,23 +14,29 @@ class ActsTab:
         self.excel_path_list = []
         self.invoices_data = []
         self.tab = master.add(f"{'Акты':^30}")
-
-        self.position1 = "Руководитель СК"
+        try:
+            self.position1 = load_data(str(settings.POSITION1_FILE))[-1]
+        except IndexError:
+            self.position1 = "Руководитель СК"
         try:
             self.name1 = load_data(str(settings.NAMES1_FILE))[-1::-1]
-            self.name1str = self.name1[-1]
+            self.name1str = self.name1[0]
         except IndexError:
             self.name1str = ""
             self.name1 = [self.name1str]
-        self.name1var = StringVar(value=self.name1[-1])
-        self.position2 = "Кладовщик"
+        self.name1var = StringVar(value=self.name1[0])
+
+        try:
+            self.position2 = load_data(str(settings.POSITION2_FILE))[-1]
+        except IndexError:
+            self.position2 = "Кладовщик"
         try:
             self.name2 = load_data(str(settings.NAMES2_FILE))[-1::-1]
-            self.name2str = self.name2[-1]
+            self.name2str = self.name2[0]
         except IndexError:
             self.name2str = ""
             self.name2 = [self.name2str]
-        self.name2var = StringVar(value=self.name2[-1])
+        self.name2var = StringVar(value=self.name2[0])
 
         try:
             self.reason_for_write_off = load_data(str(settings.REASON_FILE))[-1]
@@ -98,6 +104,7 @@ class ActsTab:
         )
         self.name1_label.grid(row=0, column=1, padx=5, pady=(0, 0), sticky="ew")
         self.name1_combo_box = ctk.CTkComboBox(setting_frame, values=self.name1)
+        self.name1_combo_box.bind("<Delete>", self._del_name1)
         # self.name1_combo_box.insert(0, self.name1)
 
         self.name1_combo_box.grid(row=1, column=1, padx=5, pady=(0, 15), sticky="ew")
@@ -117,6 +124,7 @@ class ActsTab:
         self.name2_label.grid(row=2, column=1, padx=5, pady=(0, 0), sticky="ew")
 
         self.name2_combo_box = ctk.CTkComboBox(setting_frame, values=self.name2)
+        self.name2_combo_box.bind("<Delete>", self._del_name2)
 
         # self.name2_entry.insert(0, self.name2)
         self.name2_combo_box.grid(row=3, column=1, padx=5, pady=(0, 15), sticky="ew")
@@ -172,15 +180,58 @@ class ActsTab:
             invoice_data = pars_invoice(Path(file_path))
             self.invoices_data.append(invoice_data)
 
+    def (self, event):
+        if self.name1_combo_box.get().strip() and self.name1:
+            self.name1.remove(self.name1_combo_box.get())
+            save_data(self.name1, settings.NAMES1_FILE)
+            self.name1 = load_data(str(settings.NAMES1_FILE))[-1::-1]
+            self.name1_combo_box.configure(values=self.name1)
+
+            if self.name1:
+                self.name1_combo_box.set(self.name1[0])
+            else:
+                self.name1_combo_box.set("")
+        else:
+            messagebox.showinfo("Внимание!", "Все значения удалены!")
+
+    def _del_name2(self, event):
+        if self.name2_combo_box.get().strip() and self.name2:
+            self.name2.remove(self.name2_combo_box.get())
+            save_data(self.name2, settings.NAMES2_FILE)
+            self.name2 = load_data(str(settings.NAMES2_FILE))[-1::-1]
+            self.name2_combo_box.configure(values=self.name2)
+
+            if self.name2:
+                self.name2_combo_box.set(self.name2[0])
+            else:
+                self.name2_combo_box.set("")
+        else:
+            messagebox.showinfo("Внимание!", "Все значения удалены!")
+
     def _create_setting_data(self):
         self.position1 = self.position1_entry.get()
         self.name1str = self.name1_combo_box.get()
         self.position2 = self.position2_entry.get()
         self.name2str = self.name2_combo_box.get()
         self.reason_for_write_off = self.reason_for_write_off_entry.get()
+
+        if not all(
+            (
+                self.position1.strip(),
+                self.name1str.strip(),
+                self.position2.strip(),
+                self.name2str.strip(),
+                self.reason_for_write_off.strip(),
+            )
+        ):
+            messagebox.showerror("Ошибка", "Заполните все поля")
+            raise ValueError
+
         append_data(self.name1str, str(settings.NAMES1_FILE))
         append_data(self.name2str, str(settings.NAMES2_FILE))
         append_data(self.reason_for_write_off, str(settings.REASON_FILE))
+        save_data([self.position1], settings.POSITION1_FILE)
+        save_data([self.position2], settings.POSITION2_FILE)
         self.name1 = load_data(str(settings.NAMES1_FILE))
         self.name2 = load_data(str(settings.NAMES2_FILE))
 
@@ -188,18 +239,6 @@ class ActsTab:
         self.name2_combo_box.configure(
             values=self.name2[-1::-1]
         )  # отображает недавно введенные вверху
-        # self.name2_entry.update()
-        if not all(
-            (
-                self.position1,
-                self.name1str,
-                self.position2,
-                self.name2str,
-                self.reason_for_write_off,
-            )
-        ):
-            messagebox.showerror("Ошибка", "Заполните все поля")
-            raise ValueError
 
     def create_act(self):
         try:
