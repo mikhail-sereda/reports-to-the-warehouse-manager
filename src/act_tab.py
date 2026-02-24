@@ -180,7 +180,7 @@ class ActsTab:
             invoice_data = pars_invoice(Path(file_path))
             self.invoices_data.append(invoice_data)
 
-    def (self, event):
+    def _del_name1(self, event):
         if self.name1_combo_box.get().strip() and self.name1:
             self.name1.remove(self.name1_combo_box.get())
             save_data(self.name1, settings.NAMES1_FILE)
