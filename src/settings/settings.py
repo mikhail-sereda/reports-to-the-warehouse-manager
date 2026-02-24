@@ -6,12 +6,16 @@ class Settings:
     NAMES1_FILE = Path("static/data/settings/names1.pkl")
     NAMES2_FILE = Path("static/data/settings/names2.pkl")
     REASON_FILE = Path("static/data/settings/reasons.pkl")
+    POSITION1_FILE = Path("static/data/settings/position1.pkl")
+    POSITION2_FILE = Path("static/data/settings/position2.pkl")
 
     # NAMES_FILE = Path("static/data/settings/names.pkl")
     def __init__(self):
         self._create_names1()
         self._create_names2()
         self._create_reason()
+        self._create_position1()
+        self._create_position2()
 
     @staticmethod
     def _create_data_files(path_file: str):
@@ -34,6 +38,14 @@ class Settings:
     def _create_reason(self):
         if not self._check_file(self.REASON_FILE):
             self._create_data_files(str(self.REASON_FILE))
+
+    def _create_position1(self):
+        if not self._check_file(self.POSITION1_FILE):
+            self._create_data_files(str(self.POSITION1_FILE))
+
+    def _create_position2(self):
+        if not self._check_file(self.POSITION2_FILE):
+            self._create_data_files(str(self.POSITION2_FILE))
 
 
 def save_data(data, filename):
