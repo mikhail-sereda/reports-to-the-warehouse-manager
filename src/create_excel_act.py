@@ -16,12 +16,6 @@ def open_excel_template_openpyxl(file_path: Path) -> Workbook:
     return workbook
 
 
-def create_worksheets(open_file: Workbook, worksheets_name: list):
-    for name in worksheets_name:
-        new_worksheet = open_file.copy_worksheet(open_file.worksheets[0])
-        new_worksheet.title = name
-
-
 def get_invoice_number(text: str) -> str:
     text_list = text.split()
     return text_list[2]
@@ -223,7 +217,10 @@ def style_and_format_table(border_style: Side, work_worksheet: Worksheet):
             cells[8].alignment = Alignment(
                 horizontal="center", vertical="center", wrap_text=True
             )
-            for j in [0, 4, 5, 6, 7, 10]:
+            cells[10].alignment = Alignment(
+                horizontal="center", vertical="center", wrap_text=True
+            )
+            for j in [0, 4, 5, 6, 7]:
                 cells[j].alignment = Alignment(horizontal="center", vertical="center")
 
             work_worksheet.row_dimensions[i].height = 40
